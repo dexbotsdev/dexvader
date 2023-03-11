@@ -1,0 +1,27 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bnbToInvestPerToken = exports.delay = exports.slippage = exports.gasLimit = exports.trailingstopLoss = exports.stopLoss = exports.takeProfit = exports.liquidityBarrier = exports.RPC_BSC = exports.honeyCheckAddress = exports.busdAddress = exports.bnbAddress = exports.wbnbAddress = exports.factoryAddress = exports.routerAddress = exports.rpc_http = exports.rpc_wss = exports.httpUrl = exports.wsUrl = exports.appKey = exports.appId = void 0;
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
+exports.appId = "Z6R6NI8P6LR2ZIE0B9G1";
+exports.appKey = "QCS13J3VY5P6C0SV9CXFW24P8CQQ3RS8EQCX3LHB";
+exports.wsUrl = 'ws://144.24.158.75:1337/parse';
+exports.httpUrl = 'ws://144.24.158.75:1337/parse';
+exports.rpc_wss = 'wss://bsc-mainnet.nodereal.io/ws/v1/ea49d5c625d34b069be219d151e4f1e8';
+exports.rpc_http = 'https://bsc-mainnet.nodereal.io/ws/v1/ea49d5c625d34b069be219d151e4f1e8';
+exports.routerAddress = '0x10ed43c718714eb63d5aa57b78b54704e256024e';
+exports.factoryAddress = '0xca143ce32fe78f1f7019d7d551a6402fc5350c73';
+exports.wbnbAddress = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c';
+exports.bnbAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+exports.busdAddress = '0xe9e7cea3dedca5984780bafc599bd69add087d56';
+exports.honeyCheckAddress = '0xcF8138eC606cD88C561A19F626EfCB25499DD95D';
+exports.RPC_BSC = "https://bsc-dataseed.binance.org/";
+// BNB Liquidity Limit to validate before buying
+exports.liquidityBarrier = Number(process.env.liquidityBarrier);
+exports.takeProfit = Number(process.env.takeProfit);
+exports.stopLoss = Number(process.env.stopLoss);
+exports.trailingstopLoss = Number(process.env.trailingstopLoss);
+exports.gasLimit = Number(process.env.gasLimit);
+exports.slippage = Number(process.env.slippage);
+exports.delay = Number(process.env.delay);
+exports.bnbToInvestPerToken = Number(process.env.bnbToInvestPerToken);
