@@ -5,6 +5,12 @@
 		},
 		{
 			"path": "../TokenBuzzerJob"
+		},
+		{
+			"path": "../demo"
+		},
+		{
+			"path": "../dexvaderpro"
 		}
 	],
 	"settings": {

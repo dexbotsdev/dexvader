@@ -30,6 +30,7 @@ export const sequelize :Sequelize = new Sequelize({
   declare sellAtTime: CreationOptional<Date>;   
   declare sellAtPrice: number ; // for nullable fields
   declare profit: number ; // for nullable fields 
+  declare prevQuote: number ; // for nullable fields 
   declare quantity: number ; // for nullable fields 
 } ;
 
@@ -101,6 +102,11 @@ Tradex.init({
     type: DataTypes.FLOAT,
     defaultValue:0.0,
     allowNull: false
+  },
+  prevQuote: {
+    type: DataTypes.FLOAT,
+    defaultValue:0.0,
+    allowNull: true
   },
   quantity: {
     type: DataTypes.FLOAT,

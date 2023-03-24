@@ -6,6 +6,12 @@ exports.sequelize = new sequelize_1.Sequelize({
     dialect: 'sqlite',
     storage: './data/database.sqlite',
     logging: false,
+    pool: {
+        max: 50,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
 });
 class Tradex extends sequelize_1.Model {
 }
@@ -74,6 +80,16 @@ Tradex.init({
         allowNull: true
     },
     profit: {
+        type: sequelize_1.DataTypes.FLOAT,
+        defaultValue: 0.0,
+        allowNull: false
+    },
+    prevQuote: {
+        type: sequelize_1.DataTypes.FLOAT,
+        defaultValue: 0.0,
+        allowNull: true
+    },
+    quantity: {
         type: sequelize_1.DataTypes.FLOAT,
         defaultValue: 0.0,
         allowNull: false

@@ -1,14 +1,14 @@
-import ethers,{logger, providers,Wallet,Contract}  from "ethers"; 
+import ethers,{logger, providers,Wallet,Contract,utils}  from "ethers"; 
 import Web3 from "web3";
-import { rpc_wss,wbnbAddress,routerAddress,honeyCheckAddress, RPC_BSC, bnbToInvestPerToken, gasLimit, slippage, privateKey, MAX, gasPrice } from "../../config";
+import { rpc_wss,wbnbAddress,routerAddress,honeyCheckAddress, RPC_BSC, bnbToInvestPerToken, gasLimit, slippage, privateKey, MAX, gasPrice, demoEnabled } from "../../config";
 import { ERC20_ABI } from "./erc20";
 import { PancakeRouterABI } from "./abi/PancakeRouterABI";
  import axios from "axios"; 
 import HoneypotCheckerCaller from "./HoneypotCheckerCaller"; 
 import getWeb3 from "./web3";
 import { WBNB_ABI } from './abi/wbnbABI';
-const provider = new  providers.WebSocketProvider(
-  rpc_wss
+const provider = new  providers.JsonRpcProvider(
+  RPC_BSC
 ); 
 
 const wallet = new Wallet(privateKey, provider); 
@@ -38,6 +38,24 @@ export const getContract = (tokenAddress: string)=>{
 }
  
 
+ 
+
+export const getTokenPrice   =async(inputCurrency: any,outputCurrency: any)=>{
+try{
+  let tokenContract = new Contract(outputCurrency, ERC20_ABI, signer);
+  const decimalsdest = await tokenContract.decimals();
+
+  const amounts = await router.getAmountsOut(utils.parseUnits("1", decimalsdest), [outputCurrency,inputCurrency]);
+
+  console.log(' Amounts in getTokenPrice for '+":"+outputCurrency)
+  console.log(utils.formatUnits(amounts[1].toString(),18));
+
+  return utils.formatUnits(amounts[1].toString(),18);
+}catch(error){
+  console.log(outputCurrency)
+  console.log(error)
+}
+}
 
 
 export const getQuote = async(pairAddress: string)=>{
@@ -58,19 +76,32 @@ export const getQuote = async(pairAddress: string)=>{
 
  export  const checkAbiHoneyPot =(abi: any)=>{
  
-  var str = JSON.stringify(abi).toLowerCase(); 
-  const isAccounting = str.indexOf('setAccounting')>0 || str.indexOf('setaccounting')>0; 
+  var str = JSON.stringify(abi); 
+  const isAccounting =  str.indexOf('setaccounting')>0 || str.indexOf('upgradetoandcall')>0; 
    if(isAccounting ) return true; 
 
   return false;
 
 }
 
+export  const checkSrcHoneyPot =(abi: any)=>{
+ 
+  var str = JSON.stringify(abi); 
+  const isHiddenShit =  str.indexOf('erc20Transfer')>0 || str.indexOf('withdraw')>0 || str.indexOf('erc20Approve')>0; 
+   if(isHiddenShit ) return true; 
 
-export const buyToken= async(tokenAddress: string)=>{
+  return false;
+
+}
+
+
+export const buyToken= async(tokenAddress: string,tokenName: string)=>{
+
+  if(demoEnabled)return 'newRecpt';
+
   let amountOutMin = 0;
   //We buy x amount of the new token for our wbnb
-  const amountIn = ethers.utils.parseUnits(bnbToInvestPerToken.toString(), 'ether');
+  const amountIn = utils.parseUnits(bnbToInvestPerToken.toString(), 'ether');
   let tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
   const decimalsdest = await tokenContract.decimals();
   const nonce = (await provider.getTransactionCount(wallet.address)) + 1
@@ -83,6 +114,8 @@ export const buyToken= async(tokenAddress: string)=>{
   await WBNB.approve(routerAddress,MAX).then((res: any)=>{
     console.log(res)
   }).catch((error: any)=>{
+    console.log(tokenAddress)
+
     console.log(error)
   })
   if (  slippage  !== 0 ){
@@ -92,8 +125,8 @@ export const buyToken= async(tokenAddress: string)=>{
   console.log( 
      `Buying Token
      =================
-     tokenIn: ${((ethers.utils.formatUnits(amountIn,18))).toString()}   (BNB)
-     tokenOut: ${Number(ethers.utils.formatUnits(amountOutMin,decimalsdest)).toFixed(2)}  
+     tokenIn: ${((utils.formatUnits(amountIn,18))).toString()}   (BNB)
+     tokenOut: ${Number(utils.formatUnits(amountOutMin,decimalsdest)).toFixed(2)}  ${tokenName}
    `);
 
    logger.info('Buying Token '+ tokenAddress)
@@ -105,7 +138,7 @@ export const buyToken= async(tokenAddress: string)=>{
    Date.now() + 1000 * 1, //5 minutes
    { 
      'gasLimit': gasLimit,
-     'gasPrice': ethers.utils.parseUnits(gasPrice, 'gwei'), 
+     'gasPrice': utils.parseUnits(gasPrice, 'gwei'), 
  });
  
 
@@ -117,9 +150,11 @@ return receipt;
 
 
 }
-
+ 
 
 export const sellToken= async(tokenAddress: string)=>{
+
+  if(demoEnabled)return 'newRecpt';
 
 let amountOutMin = 0;
   //We sell x amount of the new token for our wbnb
@@ -144,8 +179,8 @@ let amountOutMin = 0;
   console.log( 
      `Buying Token
      =================
-     tokenIn: ${((ethers.utils.formatUnits(amountIn,18))).toString()}   (WBNB)
-     tokenOut: ${Number(ethers.utils.formatUnits(amountOutMin,decimalsdest)).toFixed(2)}  
+     tokenIn: ${((utils.formatUnits(amountIn,18))).toString()}   (WBNB)
+     tokenOut: ${Number(utils.formatUnits(amountOutMin,decimalsdest)).toFixed(2)}  
    `);
 
    logger.info('Selling Token '+ tokenAddress)
@@ -157,7 +192,7 @@ let amountOutMin = 0;
    Date.now() + 1000 * 1, //5 minutes
    { 
      'gasLimit': gasLimit,
-     'gasPrice': ethers.utils.parseUnits(gasPrice, 'gwei'), 
+     'gasPrice': utils.parseUnits(gasPrice, 'gwei'), 
  });
  
  const receipt = await tx.wait();

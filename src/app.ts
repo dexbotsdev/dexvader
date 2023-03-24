@@ -11,10 +11,10 @@ const port: number =  Number(process.env.PORT) || 3001
 app.get('/hello', (req: Request, res: Response) => {
     res.send('Hello toto')
 }) 
-app.use(express.static(path.join(__dirname, './ui', 'build')))
+app.use(express.static(path.resolve('./ui')))
 
 app.get("/", (req: Request, res: Response) => {
-   res.sendFile(path.join(__dirname, './ui/build/index.html'));
+  res.sendFile(path.resolve('ui/index.html'));
 
 });
 app.get("/totalProfits", async (req: Request, res: Response) => {
