@@ -18,13 +18,13 @@ const mainjob_1 = __importDefault(require("./mainjob"));
 const path_1 = __importDefault(require("path"));
 const sequelize_1 = require("sequelize");
 const app = (0, express_1.default)();
-const port = 3001;
+const port = Number(process.env.PORT) || 3001;
 app.get('/hello', (req, res) => {
     res.send('Hello toto');
 });
-app.use(express_1.default.static(path_1.default.join(__dirname, './ui', 'build')));
+app.use(express_1.default.static(path_1.default.resolve('./ui')));
 app.get("/", (req, res) => {
-    res.sendFile(path_1.default.join(__dirname, './ui/build/index.html'));
+    res.sendFile(path_1.default.resolve('ui/index.html'));
 });
 app.get("/totalProfits", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const totalProfits = yield db_1.default.sum('profit', { where: { sellAtTime: {
@@ -74,6 +74,6 @@ app.get("/deleteTrade/:id", (req, res) => __awaiter(void 0, void 0, void 0, func
     res.send({ deleted: req.params['id'] });
 }));
 app.listen(port, function () {
-    (0, mainjob_1.default)();
     console.log(`App is listening on port ${port} !`);
 });
+(0, mainjob_1.default)();

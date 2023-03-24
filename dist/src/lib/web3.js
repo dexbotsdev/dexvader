@@ -6,6 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const web3_1 = __importDefault(require("web3"));
 const config_1 = require("../../config");
 const getWeb3 = () => {
-    return new web3_1.default(config_1.rpc_wss);
+    return new web3_1.default(config_1.RPC_BSC);
 };
 exports.default = getWeb3;

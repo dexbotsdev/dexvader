@@ -1,1 +1,13 @@
 node_modules
+out
+dist
+data
+logs
+*.lock
+*.lock.json
+*.log
+dexvader.code-workspace
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
